@@ -1,4 +1,8 @@
 package com.bakerboyle.mes.repository;
 
-public class CustomerRepository {
+import com.bakerboyle.mes.model.CustomerEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CustomerRepository extends JpaRepository<CustomerEntity, Integer> {
+
 }
