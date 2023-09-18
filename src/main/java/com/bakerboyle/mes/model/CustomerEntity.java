@@ -1,29 +1,28 @@
 package com.bakerboyle.mes.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+//import jakarta.persistence.Column;
+//import jakarta.persistence.Entity;
+//import jakarta.persistence.Id;
+//import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "customer")
-public class Customer implements Serializable {
+//@Entity
+//@Table(name = "customer")
+public class CustomerEntity implements Serializable {
 
-    @Column(name = "cust_id")
-    @Id
+//    @Column(name = "cust_id")
+//    @Id
     private String customerId;
 
-    @Column(name = "first_name")
+//    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
+//    @Column(name = "last_name")
     private String lastName;
 
     public String getCustomerId() {

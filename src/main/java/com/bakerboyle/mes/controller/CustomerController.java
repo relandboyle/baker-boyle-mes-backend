@@ -1,6 +1,6 @@
 package com.bakerboyle.mes.controller;
 
-import com.bakerboyle.mes.model.Customer;
+import com.bakerboyle.mes.model.CustomerEntity;
 import com.bakerboyle.mes.service.IdentifierService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+import java.util.UUID;//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4209")
@@ -22,7 +22,7 @@ public class CustomerController {
     @GetMapping(path = "/{custId}")
     public ResponseEntity<String> getCustomer(@RequestHeader HttpHeaders reqHeaders, @PathVariable String custId) {
 
-        Customer staticTestUser = new Customer();
+        CustomerEntity staticTestUser = new CustomerEntity();
         staticTestUser.setFirstName("Elon");
         staticTestUser.setLastName("Musk");
 
@@ -35,14 +35,16 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public Customer createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody Customer body) {
+    public CustomerEntity createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody CustomerEntity body) {
         System.out.println("REQUEST HEADERS: " + reqHeaders);
         System.out.println("REQUEST BODY: " + body);
 
         UUID custId = generateId.generateIdFromInput("CUST-123456");
         body.setCustomerId(custId.toString());
 
-        ResponseEntity<Customer> response = new ResponseEntity<>(body, HttpStatus.OK);
+        String newEntityId = generateId.generateEntityId();
+
+        ResponseEntity<CustomerEntity> response = new ResponseEntity<>(body, HttpStatus.OK);
         System.out.println("RESPONSE: " + response.getBody());
         return response.getBody();
     }
