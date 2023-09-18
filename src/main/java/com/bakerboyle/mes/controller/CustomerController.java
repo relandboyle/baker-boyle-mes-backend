@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4209")
 @RequestMapping(value = "/customers")
@@ -26,8 +24,6 @@ public class CustomerController {
         staticTestUser.setFirstName("Elon");
         staticTestUser.setLastName("Musk");
 
-
-
         System.out.println("REQUEST HEADERS: " + reqHeaders);
         System.out.println("REQUEST PARAM: " + custId);
         ResponseEntity<String> response = new ResponseEntity<>("Hello World", HttpStatus.OK);
@@ -38,11 +34,6 @@ public class CustomerController {
     public CustomerEntity createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody CustomerEntity body) {
         System.out.println("REQUEST HEADERS: " + reqHeaders);
         System.out.println("REQUEST BODY: " + body);
-
-        UUID custId = generateId.generateIdFromInput("CUST-123456");
-        body.setCustomerId(custId.toString());
-
-        String newEntityId = generateId.generateEntityId();
 
         ResponseEntity<CustomerEntity> response = new ResponseEntity<>(body, HttpStatus.OK);
         System.out.println("RESPONSE: " + response.getBody());
