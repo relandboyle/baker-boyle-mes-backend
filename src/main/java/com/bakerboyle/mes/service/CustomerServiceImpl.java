@@ -13,20 +13,20 @@ public class CustomerServiceImpl implements CustomerEntityService {
 
     private final CustomerRepository customerRepository;
     @Override
-    public Integer createCustomerEntity(CustomerEntity customer) {
+    public String createCustomerEntity(CustomerEntity customer) {
         return customerRepository
                 .save(customer).getCustomerId();
     }
 
     @Override
-    public Optional<CustomerEntity> findCustomerEntity(Integer customerId) {
+    public Optional<CustomerEntity> findCustomerEntity(String customerId) {
         return customerRepository
                 .findById(customerId);
 
     }
 
     @Override
-    public CustomerEntity updateCustomerEntity(Integer customerId, CustomerEntity customer) {
+    public CustomerEntity updateCustomerEntity(String customerId, CustomerEntity customer) {
         CustomerEntity theCustomerEntity = customerRepository.findById(customerId)
                 .stream()
                 .findFirst()
@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerEntityService {
     }
 
     @Override
-    public void deleteCustomerEntity(Integer customerId) {
+    public void deleteCustomerEntity(String customerId) {
         CustomerEntity theCustomerEntity = customerRepository
                 .findById(customerId).get();
         if (theCustomerEntity == null){

@@ -32,6 +32,6 @@ public class IdentifierService {
 
         long randomIndex = Math.round(Math.floor(Math.random() * idPool.size()));
         int newEntityId = idPool.get((int)randomIndex);
-        return prefix + newEntityId;
+        return String.valueOf(prefix + newEntityId);
     }
 }

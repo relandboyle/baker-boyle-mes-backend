@@ -1,16 +1,21 @@
 package com.bakerboyle.mes.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.UUID;
+
 @Data
 @Entity
+@Table(name = "customers")
 public class CustomerEntity {
     @Id
-    @GeneratedValue
-    private Integer customerId;
+//    @GeneratedValue
+    @Column(name = "cust_id")
+    private String customerId;
+
+    @Column(name = "internal_id")
+    private UUID internalId;
 
     @Column(name = "first_name")
     private String firstName;
