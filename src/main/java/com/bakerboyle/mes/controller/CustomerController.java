@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4209")
@@ -19,29 +22,51 @@ public class CustomerController {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    IdentifierService generateId;
+    IdentifierService identifierService;
     @Autowired
     CustomerEntityService customerEntityService;
     @GetMapping(path = "{custId}")
-    public Optional<CustomerEntity> getCustomer(@RequestHeader HttpHeaders reqHeaders, @PathVariable String custId) {
+    public ResponseEntity<CustomerEntity> getCustomer(@RequestHeader HttpHeaders reqHeaders, @PathVariable String custId) {
         System.out.println("REQUEST HEADERS: " + reqHeaders);
         System.out.println("REQUEST PARAM: " + custId);
 
-        Optional<CustomerEntity> response = customerEntityService.findCustomerEntity(Integer.parseInt(custId));
+        Optional<CustomerEntity> customer = customerEntityService.findCustomerEntity(custId);
+        System.out.println("CUSTOMER: " + customer.isPresent());
+        ResponseEntity<CustomerEntity> response = null;
+        if (customer.isPresent()) {
+            response = new ResponseEntity<>(customer.get(), HttpStatus.OK);
+        }
+        System.out.println("RESPONSE: " + response.getBody());
         return response;
     }
 
     @PostMapping()
-    public ResponseEntity<Integer> createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody CustomerEntity body) {
-        System.out.println("REQUEST HEADERS: " + reqHeaders);
-        System.out.println("REQUEST BODY: " + body);
+    public ResponseEntity<CustomerEntity> createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody CustomerEntity customer) {
+        List<String> existing = Stream.of("CUST-123456").toList();
+        String newCustomerId = identifierService.generateEntityId(existing, "CUST-");
+        UUID newUUID = identifierService.generateUUIDFromInput(newCustomerId);
+        customer.setCustomerId(newCustomerId);
+        customer.setInternalId(newUUID);
 
-        Integer customerId = customerEntityService.createCustomerEntity(body);
+        String customerId = customerEntityService.createCustomerEntity(customer);
+        Optional<CustomerEntity> confirmation = customerEntityService.findCustomerEntity(newCustomerId);
 
-        ResponseEntity<CustomerEntity> response = new ResponseEntity<>(body, HttpStatus.OK);
+        ResponseEntity<CustomerEntity> response = new ResponseEntity<>(confirmation.get(), HttpStatus.OK);
         System.out.println("RESPONSE: " + response.getBody());
-//        return response.getBody();
+        return response;
+    }
 
-        return new ResponseEntity<>(customerId, HttpStatus.CREATED);
+    @DeleteMapping(path = "{custId}")
+    public ResponseEntity<CustomerEntity> deleteCustomer(@PathVariable String custId) {
+        Optional<CustomerEntity> customer = customerEntityService.findCustomerEntity(custId);
+        System.out.println("CUSTOMER: " + customer.isPresent());
+        if (customer.isPresent()) {
+            customerEntityService.deleteCustomerEntity(custId);
+        }
+        Optional<CustomerEntity> confirmation = customerEntityService.findCustomerEntity(custId);
+        System.out.println("CONFIRMATION: " + confirmation.isPresent());
+        if (confirmation.isEmpty()) {
+            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
+        }
     }
 }
