@@ -31,6 +31,7 @@ public class CustomerController {
     public List<String> getAllCustomerIds() {
         List<CustomerEntity> allCustomers = customerService.getAllCustomers();
         ArrayList<String> allCustomerIds = new ArrayList<>();
+
         for (CustomerEntity cust : allCustomers) {
             allCustomerIds.add(cust.getCustomerId());
         }
@@ -39,17 +40,17 @@ public class CustomerController {
     }
 
     @GetMapping(path = "{custId}")
-    public ResponseEntity<CustomerEntity> getCustomer(@PathVariable String custId) {
+    public ResponseEntity<CustomerEntity> getCustomer(@PathVariable String customerId) {
         ResponseEntity<CustomerEntity> response = null;
 
         try {
-            Optional<CustomerEntity> customer = customerService.findCustomerEntity(custId);
+            Optional<CustomerEntity> customer = customerService.findCustomerEntity(customerId);
             if (customer.isPresent()) {
                 response = new ResponseEntity<>(customer.get(), HttpStatus.OK);
                 return response;
             }
             else {
-                throw new ServiceException("Customer " + custId + " not found!");
+                throw new ServiceException("Customer " + customerId + " not found!");
             }
         }
         catch (NullPointerException e) {
@@ -75,6 +76,12 @@ public class CustomerController {
         }
 
         return response;
+    }
+
+    @PutMapping(path = "{customerId}")
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable String customerId, @RequestBody CustomerEntity customer) {
+        CustomerEntity updatedCustomer = customerService.updateCustomerEntity(customerId, customer);
+        return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{customerId}")
