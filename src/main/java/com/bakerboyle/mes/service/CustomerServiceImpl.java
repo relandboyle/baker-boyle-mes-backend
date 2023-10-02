@@ -3,8 +3,11 @@ package com.bakerboyle.mes.service;
 import com.bakerboyle.mes.model.CustomerEntity;
 import com.bakerboyle.mes.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,7 +25,6 @@ public class CustomerServiceImpl implements CustomerEntityService {
     public Optional<CustomerEntity> findCustomerEntity(String customerId) {
         return customerRepository
                 .findById(customerId);
-
     }
 
     @Override
