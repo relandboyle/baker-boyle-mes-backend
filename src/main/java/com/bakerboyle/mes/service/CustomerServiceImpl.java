@@ -3,18 +3,22 @@ package com.bakerboyle.mes.service;
 import com.bakerboyle.mes.model.CustomerEntity;
 import com.bakerboyle.mes.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerServiceImpl implements CustomerEntityService {
+public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+
+    @Override
+    public List<CustomerEntity> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
     @Override
     public String createCustomerEntity(CustomerEntity customer) {
         return customerRepository
