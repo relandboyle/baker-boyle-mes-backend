@@ -4,12 +4,15 @@ import com.bakerboyle.mes.model.CustomerEntity;
 import com.bakerboyle.mes.service.CustomerEntityService;
 import com.bakerboyle.mes.service.IdentifierService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,47 +29,64 @@ public class CustomerController {
     @Autowired
     CustomerEntityService customerEntityService;
     @GetMapping(path = "{custId}")
-    public ResponseEntity<CustomerEntity> getCustomer(@RequestHeader HttpHeaders reqHeaders, @PathVariable String custId) {
-        System.out.println("REQUEST HEADERS: " + reqHeaders);
-        System.out.println("REQUEST PARAM: " + custId);
-
-        Optional<CustomerEntity> customer = customerEntityService.findCustomerEntity(custId);
-        System.out.println("CUSTOMER: " + customer.isPresent());
+    public ResponseEntity<CustomerEntity> getCustomer(@PathVariable String custId) {
         ResponseEntity<CustomerEntity> response = null;
-        if (customer.isPresent()) {
-            response = new ResponseEntity<>(customer.get(), HttpStatus.OK);
+
+        try {
+            Optional<CustomerEntity> customer = customerEntityService.findCustomerEntity(custId);
+            if (customer.isPresent()) {
+                response = new ResponseEntity<>(customer.get(), HttpStatus.OK);
+                return response;
+            }
+            else {
+                throw new ServiceException("Customer " + custId + " not found!");
+            }
         }
-        System.out.println("RESPONSE: " + response.getBody());
-        return response;
+        catch (NullPointerException e) {
+            System.out.println("Customer not found! " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Query(value = "SELECT customer_id FROM customers", nativeQuery = true)
+    public Collection<String> findAllCustomerIds() {
+        return null;
     }
 
     @PostMapping()
-    public ResponseEntity<CustomerEntity> createCustomer(@RequestHeader HttpHeaders reqHeaders, @RequestBody CustomerEntity customer) {
+    public ResponseEntity<CustomerEntity> createCustomer(@RequestBody CustomerEntity customer) {
+        ResponseEntity<CustomerEntity> response = null;
+
+        // TODO: Add a query to get a list of all existing customer ID's
+        // create a list of one customer ID to eliminate when generating a new customer ID
         List<String> existing = Stream.of("CUST-123456").toList();
+
         String newCustomerId = identifierService.generateEntityId(existing, "CUST-");
         UUID newUUID = identifierService.generateUUIDFromInput(newCustomerId);
         customer.setCustomerId(newCustomerId);
         customer.setInternalId(newUUID);
 
-        String customerId = customerEntityService.createCustomerEntity(customer);
-        Optional<CustomerEntity> confirmation = customerEntityService.findCustomerEntity(newCustomerId);
+        String confirmation = customerEntityService.createCustomerEntity(customer);
+        Optional<CustomerEntity> newCustomer = customerEntityService.findCustomerEntity(confirmation);
+        if (!confirmation.isEmpty() && newCustomer.isPresent()) {
+            response = new ResponseEntity<>(newCustomer.get(), HttpStatus.OK);
+        }
 
-        ResponseEntity<CustomerEntity> response = new ResponseEntity<>(confirmation.get(), HttpStatus.OK);
-        System.out.println("RESPONSE: " + response.getBody());
         return response;
     }
 
-    @DeleteMapping(path = "{custId}")
-    public ResponseEntity<CustomerEntity> deleteCustomer(@PathVariable String custId) {
-        Optional<CustomerEntity> customer = customerEntityService.findCustomerEntity(custId);
-        System.out.println("CUSTOMER: " + customer.isPresent());
-        if (customer.isPresent()) {
-            customerEntityService.deleteCustomerEntity(custId);
+    @DeleteMapping(path = "{customerId}")
+    public ResponseEntity<CustomerEntity> deleteCustomer(@PathVariable String customerId) {
+        System.out.println("TEST");
+        System.out.println(findAllCustomerIds());
+        ResponseEntity<CustomerEntity> response = null;
+
+        Optional<CustomerEntity> customerToDelete = customerEntityService.findCustomerEntity(customerId);
+        if (customerToDelete.isPresent()) {
+            customerEntityService.deleteCustomerEntity(customerId);
+            response = new ResponseEntity<>(customerToDelete.get(), HttpStatus.OK);
         }
-        Optional<CustomerEntity> confirmation = customerEntityService.findCustomerEntity(custId);
-        System.out.println("CONFIRMATION: " + confirmation.isPresent());
-        if (confirmation.isEmpty()) {
-            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
-        }
+
+        return response;
     }
 }

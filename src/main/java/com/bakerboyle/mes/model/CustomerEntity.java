@@ -2,15 +2,19 @@ package com.bakerboyle.mes.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "customers")
-public class CustomerEntity {
+public class CustomerEntity implements Serializable {
     @Id
-//    @GeneratedValue
     @Column(name = "cust_id")
     private String customerId;
 
@@ -25,4 +29,12 @@ public class CustomerEntity {
 
     @Column(name = "email")
     private String email;
+
+    @CreationTimestamp
+    @Column(name = "date_created", nullable = false, updatable = false)
+    private Instant dateCreated;
+
+    @LastModifiedDate
+    @Column(name = "date_modified")
+    private Instant dateModified;
 }
