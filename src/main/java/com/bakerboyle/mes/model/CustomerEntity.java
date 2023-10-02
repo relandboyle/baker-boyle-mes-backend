@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -31,10 +32,10 @@ public class CustomerEntity implements Serializable {
     private String email;
 
     @CreationTimestamp
-    @Column(name = "date_created", nullable = false, updatable = false)
-    private Instant dateCreated;
+    @Column(name = "date_created")
+    private Date dateCreated;
 
     @LastModifiedDate
     @Column(name = "date_modified")
-    private Instant dateModified;
+    private Date dateModified;
 }
