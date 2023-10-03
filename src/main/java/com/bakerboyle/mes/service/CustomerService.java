@@ -1,15 +1,16 @@
 package com.bakerboyle.mes.service;
 
-import com.bakerboyle.mes.model.CustomerEntity;
+import com.bakerboyle.mes.model.Customer;
 
 import java.util.List;
 import java.util.Optional;
 
 
 public interface CustomerService {
-    List<CustomerEntity> getAllCustomers();
-    String createCustomerEntity(CustomerEntity customer);
-    Optional<CustomerEntity> findCustomerEntity(String customerId);
-    CustomerEntity updateCustomerEntity(String customerId, CustomerEntity customer);
+    List<Customer> getAllCustomers();
+    List<String> getAllCustId();
+    String createCustomerEntity(Customer customer);
+    Optional<Customer> findCustomerEntity(String customerId);
+    Customer updateCustomerEntity(String customerId, Customer customer);
     void deleteCustomerEntity(String customerId);
 }
