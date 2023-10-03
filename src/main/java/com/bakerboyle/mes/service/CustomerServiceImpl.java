@@ -1,6 +1,6 @@
 package com.bakerboyle.mes.service;
 
-import com.bakerboyle.mes.model.CustomerEntity;
+import com.bakerboyle.mes.model.Customer;
 import com.bakerboyle.mes.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,51 +15,56 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public List<CustomerEntity> getAllCustomers() {
+    public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
     @Override
-    public String createCustomerEntity(CustomerEntity customer) {
+    public List<String> getAllCustId() {
+        return customerRepository.getAllCustId();
+    }
+
+    @Override
+    public String createCustomerEntity(Customer customer) {
         return customerRepository
                 .save(customer).getCustomerId();
     }
 
     @Override
-    public Optional<CustomerEntity> findCustomerEntity(String customerId) {
+    public Optional<Customer> findCustomerEntity(String customerId) {
         return customerRepository
                 .findById(customerId);
     }
 
     @Override
-    public CustomerEntity updateCustomerEntity(String customerId, CustomerEntity customer) {
-        CustomerEntity theCustomerEntity = customerRepository.findById(customerId)
+    public Customer updateCustomerEntity(String customerId, Customer customer) {
+        Customer theCustomer = customerRepository.findById(customerId)
                 .stream()
                 .findFirst()
                 .orElseThrow(
                         () -> new RuntimeException(
                                 String.format("customer with id %s does not exist",
                                         customer.getCustomerId())));
-
-        theCustomerEntity.setFirstName(customer.getFirstName());
-        theCustomerEntity.setLastName(customer.getLastName());
-        theCustomerEntity.setEmail(customer.getEmail());
+        System.out.println("TEST: " + !customer.getCustomerId().isBlank());
+        theCustomer.setFirstName(customer.getFirstName());
+        theCustomer.setLastName(customer.getLastName());
+        theCustomer.setEmail(customer.getEmail());
 
         return customerRepository
-                .save(theCustomerEntity);
+                .save(theCustomer);
     }
 
     @Override
     public void deleteCustomerEntity(String customerId) {
-        CustomerEntity theCustomerEntity = customerRepository
+        Customer theCustomer = customerRepository
                 .findById(customerId).get();
-        if (theCustomerEntity == null){
+        if (theCustomer == null) {
             throw new RuntimeException(
                     String.format("The customer with id %s does not exist",
                             customerId));
         }
         customerRepository
-                .delete(theCustomerEntity);
+                .delete(theCustomer);
 
     }
 }
