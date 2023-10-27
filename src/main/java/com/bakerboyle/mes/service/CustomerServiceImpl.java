@@ -20,24 +20,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<String> getAllCustId() {
-        return customerRepository.getAllCustId();
+    public List<String> getAllCustomerIdOnly() {
+        return customerRepository.getAllCustomersIdOnly();
     }
 
     @Override
-    public String createCustomerEntity(Customer customer) {
+    public String createCustomer(Customer customer) {
         return customerRepository
                 .save(customer).getCustomerId();
     }
 
     @Override
-    public Optional<Customer> findCustomerEntity(String customerId) {
+    public Optional<Customer> findCustomer(String customerId) {
         return customerRepository
                 .findById(customerId);
     }
 
     @Override
-    public Customer updateCustomerEntity(String customerId, Customer customer) {
+    public Customer updateCustomer(String customerId, Customer customer) {
         Customer theCustomer = customerRepository.findById(customerId)
                 .stream()
                 .findFirst()
@@ -55,16 +55,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteCustomerEntity(String customerId) {
-        Customer theCustomer = customerRepository
-                .findById(customerId).get();
+    public void deleteCustomer(String customerId) {
+        Customer theCustomer = customerRepository.findById(customerId).get();
         if (theCustomer == null) {
             throw new RuntimeException(
-                    String.format("The customer with id %s does not exist",
-                            customerId));
+                    String.format("The customer with id %s does not exist", customerId));
         }
-        customerRepository
-                .delete(theCustomer);
-
+        customerRepository.delete(theCustomer);
     }
 }

@@ -24,12 +24,13 @@ public class CustomerController {
 
     @GetMapping(path = "allIds")
     public List<String> getAllCustomerIds() throws ServiceException {
-        return customerService.getAllCustId();
+        return customerService.getAllCustomerIdOnly();
     }
 
-    @GetMapping(path = "{custId}")
+    @GetMapping(path = "{customerId}")
     public ResponseEntity<Customer> getCustomer(@PathVariable String customerId) throws ServiceException {
-        Optional<Customer> customer = customerService.findCustomerEntity(customerId);
+        System.out.println("CUSTOMER ID: " + customerId);
+        Optional<Customer> customer = customerService.findCustomer(customerId);
         ResponseEntity<Customer> response = null;
         if (customer.isPresent()) {
             response = new ResponseEntity<>(customer.get(), HttpStatus.OK);
@@ -47,8 +48,8 @@ public class CustomerController {
         customer.setCustomerId(newCustomerId);
         customer.setInternalId(newUUID);
 
-        String confirmation = customerService.createCustomerEntity(customer);
-        Optional<Customer> newCustomer = customerService.findCustomerEntity(confirmation);
+        String confirmation = customerService.createCustomer(customer);
+        Optional<Customer> newCustomer = customerService.findCustomer(confirmation);
         if (!confirmation.isEmpty() && newCustomer.isPresent()) {
             response = new ResponseEntity<>(newCustomer.get(), HttpStatus.OK);
         }
@@ -57,7 +58,7 @@ public class CustomerController {
 
     @PutMapping(path = "{customerId}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable String customerId, @RequestBody Customer customer) throws ServiceException {
-        Customer updatedCustomer = customerService.updateCustomerEntity(customerId, customer);
+        Customer updatedCustomer = customerService.updateCustomer(customerId, customer);
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
@@ -66,9 +67,9 @@ public class CustomerController {
         System.out.println("TEST");
         ResponseEntity<Customer> response = null;
 
-        Optional<Customer> customerToDelete = customerService.findCustomerEntity(customerId);
+        Optional<Customer> customerToDelete = customerService.findCustomer(customerId);
         if (customerToDelete.isPresent()) {
-            customerService.deleteCustomerEntity(customerId);
+            customerService.deleteCustomer(customerId);
             response = new ResponseEntity<>(customerToDelete.get(), HttpStatus.OK);
         }
         return response;

@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface CustomerRepository extends JpaRepository<Customer, String> {
+public interface PartRepository extends JpaRepository<Customer, String> {
     Customer findByEmail(String email);
 
     @Query(value = "SELECT cust_id FROM customers", nativeQuery = true)
-    List<String> getAllCustomersIdOnly();
+    List<String> getAllCustId();
 }
