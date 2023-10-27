@@ -1,10 +1,12 @@
 package com.bakerboyle.mes.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,12 +19,11 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "customers")
-public class Customer implements Serializable {
-
+//@Table(name = "users")
+public class User implements Serializable {
     @Id
-    @Column(name = "cust_id", unique = true, updatable = false)
-    private String customerId;
+    @Column(name = "user_id", unique = true, updatable = false)
+    private String userId;
 
     @Column(name = "internal_id", unique = true, updatable = false)
     private UUID internalId;
@@ -44,8 +45,6 @@ public class Customer implements Serializable {
     @LastModifiedDate
     private Instant dateModified;
 
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "customer")
-//    @PrimaryKeyJoinColumn
-//    private List<SalesOrder> salesOrders;
+    @Column(name = "user_roles")
+    private List<String> userRoles;
 }

@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface CustomerService {
     List<Customer> getAllCustomers();
-    List<String> getAllCustId();
-    String createCustomerEntity(Customer customer);
-    Optional<Customer> findCustomerEntity(String customerId);
-    Customer updateCustomerEntity(String customerId, Customer customer);
-    void deleteCustomerEntity(String customerId);
+    List<String> getAllCustomerIdOnly();
+    String createCustomer(Customer customer);
+    Optional<Customer> findCustomer(String customerId);
+    Customer updateCustomer(String customerId, Customer customer);
+    void deleteCustomer(String customerId);
 }
